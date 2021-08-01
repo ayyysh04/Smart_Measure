@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "75572556145",
+    "firebase_url": "https://smart-measure-e0ced-default-rtdb.firebaseio.com",
+    "project_id": "smart-measure-e0ced",
+    "storage_bucket": "smart-measure-e0ced.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:75572556145:android:23fce3e8df464504d5c6d0",
+        "android_client_info": {
+          "package_name": "com.example.smart_measure"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "75572556145-t3eh0ufj9qid7b7a5qf7i13s7cafekh3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFGYHFRFbVXwmFHlQjG1fgYplrGDoDn6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "75572556145-t3eh0ufj9qid7b7a5qf7i13s7cafekh3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
