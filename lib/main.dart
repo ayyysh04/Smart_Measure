@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
-
-import './singlepage_app.dart';
+import 'package:smart_measure/pages/signin_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SinglePageApp(),
+      // home: LoginPage(),
+      // SinglePageApp(),
       theme: ThemeData(
           primaryColor: Colors.amber, primarySwatch: Colors.deepOrange),
       darkTheme: ThemeData.dark(),
+      routes: {
+        "/": (context) => LoginPage(),
+      },
     );
   }
 }

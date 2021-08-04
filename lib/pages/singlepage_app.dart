@@ -1,25 +1,43 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:velocity_x/velocity_x.dart';
+
+import 'package:smart_measure/tools/intilize.dart';
+import 'package:smart_measure/widgets/distance_widget.dart';
 
 class SinglePageApp extends StatefulWidget {
+  final DatabaseReference database;
+  final FirebaseApp? firebase;
   @override
-  _SinglePageAppState createState() => _SinglePageAppState();
+  const SinglePageApp({
+    Key? key,
+    required this.database,
+    required this.firebase,
+  }) : super(key: key);
+  @override
+  _SinglePageAppState createState() => _SinglePageAppState(database, firebase);
 }
 
 class _SinglePageAppState extends State<SinglePageApp>
     with SingleTickerProviderStateMixin {
-  bool led;
+  final DatabaseReference database;
+  final FirebaseApp? firebase;
+  bool led = false;
   var distance;
-  TabController _tabController;
+  late TabController _tabController;
   int tabIndex = 0;
-  DatabaseReference database = FirebaseDatabase().reference();
-  void updateswitch() {
+
+  _SinglePageAppState(this.database, this.firebase);
+
+  //     FirebaseDatabase().reference();
+  //database refrence
+  void updateswitch() async {
     if (led == true)
-      database.update({'STATUS': "OFF"});
+      await database.update({'STATUS': "OFF"});
     else
-      database.update({'STATUS': "ON"});
+      await database.update({'STATUS': "ON"});
   }
 
   // void getData() async {
@@ -47,12 +65,18 @@ class _SinglePageAppState extends State<SinglePageApp>
 
   @override
   Widget build(BuildContext context) {
-    return mainScaffold();
+    return mainPage();
   }
 
-  Widget mainScaffold() {
+  Widget mainPage() {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text("Smart Measure"),
         bottom: TabBar(
           controller: _tabController,
@@ -63,10 +87,10 @@ class _SinglePageAppState extends State<SinglePageApp>
           },
           tabs: [
             Tab(
-              icon: Icon(MaterialCommunityIcons.database),
+              icon: Icon(CupertinoIcons.chart_bar_square),
             ),
             Tab(
-              icon: Icon(MaterialCommunityIcons.toggle_switch),
+              icon: Icon(Icons.light),
             )
           ],
         ),
@@ -78,12 +102,17 @@ class _SinglePageAppState extends State<SinglePageApp>
           ),
           Expanded(
             child: StreamBuilder(
-                stream: database.child('').onValue,
-                builder: (context, snap) {
+                stream: database.onValue
+                // database
+                //     .child('')
+                //     .onValue //onValue:When value changes then this gets trigger
+
+                ,
+                builder: (context, AsyncSnapshot<Event> snap) {
                   if (snap.hasData &&
                       !snap.hasError &&
-                      snap.data.snapshot.value != null) {
-                    Map data = snap.data.snapshot.value;
+                      snap.data!.snapshot.value != null) {
+                    Map data = snap.data!.snapshot.value;
                     distance = data['cm'];
                     var status = data['STATUS'];
                     if (status == "ON")
@@ -92,7 +121,7 @@ class _SinglePageAppState extends State<SinglePageApp>
                       led = false;
                     return IndexedStack(
                       index: tabIndex,
-                      children: [distanceLayout(distance), switchLayout(led)],
+                      children: [distanceWidget(distance), switchLayout(led)],
                     );
                   } else {
                     return Center(
@@ -104,28 +133,6 @@ class _SinglePageAppState extends State<SinglePageApp>
         ],
       ),
     );
-  }
-
-  Widget distanceLayout(var distance) {
-    return Center(
-        child: Container(
-            child: SfRadialGauge(axes: <RadialAxis>[
-      RadialAxis(minimum: 0, maximum: 1000, ranges: <GaugeRange>[
-        GaugeRange(startValue: 0, endValue: 200, color: Colors.green),
-        GaugeRange(startValue: 200, endValue: 500, color: Colors.orange),
-        GaugeRange(startValue: 500, endValue: 1000, color: Colors.red)
-      ], pointers: <GaugePointer>[
-        NeedlePointer(value: distance.toDouble())
-      ], annotations: <GaugeAnnotation>[
-        GaugeAnnotation(
-            widget: Container(
-                child: Text(distance.toString() + ' cm',
-                    style:
-                        TextStyle(fontSize: 25, fontWeight: FontWeight.bold))),
-            angle: 90,
-            positionFactor: 0.5)
-      ])
-    ])));
   }
 
   Widget switchLayout(bool led) {
