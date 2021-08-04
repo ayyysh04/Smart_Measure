@@ -1,4 +1,57 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
+
+class DistancePage extends StatefulWidget {
+  final DatabaseReference database;
+  const DistancePage({
+    Key? key,
+    required this.database,
+  }) : super(key: key);
+
+  @override
+  _DistancePageState createState() => _DistancePageState(database);
+}
+
+class _DistancePageState extends State<DistancePage> {
+  final DatabaseReference database;
+  var distance;
+  _DistancePageState(this.database);
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Stream.fromIterable(elements)
+        // Stream.multi(() { })
+        // Stream.fromFutures(futures)
+        // Stream.fromFuture(future)
+        StreamBuilder(
+          stream:
+              // database.onValue
+              database
+                  .child("")
+                  .onValue //onValue:When value changes then this gets trigger
+
+          ,
+          builder: (context, AsyncSnapshot<Event> snap) {
+            if (snap.hasData &&
+                !snap.hasError &&
+                snap.data!.snapshot.value != null) {
+              Map data = snap.data!.snapshot.value;
+              distance = data['cm'];
+
+              return distanceWidget(distance);
+            } else {
+              return Center(
+                child: Text("NO DATA YET"),
+              );
+            }
+          },
+        ).expand(),
+      ],
+    );
+  }
+}
 
 Widget distanceWidget(var distance) {
   return Center(

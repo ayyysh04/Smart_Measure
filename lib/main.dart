@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_measure/pages/add_devices.dart';
 import 'package:smart_measure/pages/signin_page.dart';
+import 'package:smart_measure/pages/singlepage_app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,13 +16,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: LoginPage(),
+      // home: AddNewDevices(),
       // SinglePageApp(),
       theme: ThemeData(
           primaryColor: Colors.amber, primarySwatch: Colors.deepOrange),
       darkTheme: ThemeData.dark(),
       routes: {
         "/": (context) => LoginPage(),
+        // "/addDevice": (context) => AddNewDevices(),
       },
     );
   }

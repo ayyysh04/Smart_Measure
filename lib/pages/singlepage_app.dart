@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/pages/add_devices.dart';
+import 'package:smart_measure/pages/button_Page.dart';
+import 'package:smart_measure/widgets/switch_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'package:smart_measure/tools/intilize.dart';
@@ -24,21 +29,20 @@ class _SinglePageAppState extends State<SinglePageApp>
     with SingleTickerProviderStateMixin {
   final DatabaseReference database;
   final FirebaseApp? firebase;
-  bool led = false;
-  var distance;
-  late TabController _tabController;
-  int tabIndex = 0;
 
-  _SinglePageAppState(this.database, this.firebase);
+  late TabController _tabController;
+  int _selectedTab = 0;
+  late List _pageOptions;
+
+  _SinglePageAppState(this.database, this.firebase) {
+    _pageOptions = [
+      DistancePage(database: database),
+      SwitchPage(database: database)
+    ];
+  }
 
   //     FirebaseDatabase().reference();
   //database refrence
-  void updateswitch() async {
-    if (led == true)
-      await database.update({'STATUS': "OFF"});
-    else
-      await database.update({'STATUS': "ON"});
-  }
 
   // void getData() async {
   //   //to get the value if the database
@@ -82,7 +86,7 @@ class _SinglePageAppState extends State<SinglePageApp>
           controller: _tabController,
           onTap: (int index) {
             setState(() {
-              tabIndex = index;
+              _selectedTab = index;
             });
           },
           tabs: [
@@ -95,79 +99,7 @@ class _SinglePageAppState extends State<SinglePageApp>
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            height: 30,
-          ),
-          Expanded(
-            child: StreamBuilder(
-                stream: database.onValue
-                // database
-                //     .child('')
-                //     .onValue //onValue:When value changes then this gets trigger
-
-                ,
-                builder: (context, AsyncSnapshot<Event> snap) {
-                  if (snap.hasData &&
-                      !snap.hasError &&
-                      snap.data!.snapshot.value != null) {
-                    Map data = snap.data!.snapshot.value;
-                    distance = data['cm'];
-                    var status = data['STATUS'];
-                    if (status == "ON")
-                      led = true;
-                    else
-                      led = false;
-                    return IndexedStack(
-                      index: tabIndex,
-                      children: [distanceWidget(distance), switchLayout(led)],
-                    );
-                  } else {
-                    return Center(
-                      child: Text("NO DATA YET"),
-                    );
-                  }
-                }),
-          ),
-        ],
-      ),
+      body: _pageOptions[_selectedTab],
     );
-  }
-
-  Widget switchLayout(bool led) {
-    return Center(
-        child: Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(top: 80),
-          child: Text(
-            "POWER ON/OFF",
-            style: led
-                ? TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.amber)
-                : TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.black),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(28.0),
-          child: FloatingActionButton.extended(
-            icon: led ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
-            backgroundColor: led ? Colors.amber : Colors.black,
-            label: led ? Text("ON") : Text("OFF"),
-            elevation: 30.00,
-            onPressed: () {
-              // onUpdate();
-              updateswitch();
-            },
-          ),
-        )
-      ],
-    ));
   }
 }
