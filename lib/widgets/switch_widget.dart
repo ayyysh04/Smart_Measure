@@ -1,23 +1,21 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
 import 'package:smart_measure/pages/add_devices.dart';
 import 'package:smart_measure/pages/button_Page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class SwitchPage extends StatefulWidget {
-  final DatabaseReference database;
-
   const SwitchPage({
     Key? key,
-    required this.database,
   }) : super(key: key);
 
   @override
-  _SwitchPageState createState() => _SwitchPageState(database);
+  _SwitchPageState createState() => _SwitchPageState();
 }
 
 class _SwitchPageState extends State<SwitchPage> {
-  final DatabaseReference database;
+  final DatabaseReference database = Database.database;
   bool led = false;
   void updateswitch() async {
     if (led == true)
@@ -26,7 +24,7 @@ class _SwitchPageState extends State<SwitchPage> {
       await database.update({'STATUS': "ON"});
   }
 
-  _SwitchPageState(this.database);
+  _SwitchPageState();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -100,9 +98,7 @@ class _SwitchPageState extends State<SwitchPage> {
                       },
                     ),
                   ),
-                  ButtonPage(
-                    database: database,
-                  ).expand()
+                  ButtonPage().expand()
                 ],
               ).hPCT(context: context, heightPCT: 70.0),
             ),

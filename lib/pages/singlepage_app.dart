@@ -1,45 +1,24 @@
-import 'dart:async';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_measure/pages/add_devices.dart';
-import 'package:smart_measure/pages/button_Page.dart';
 import 'package:smart_measure/widgets/switch_widget.dart';
-import 'package:velocity_x/velocity_x.dart';
-
-import 'package:smart_measure/tools/intilize.dart';
 import 'package:smart_measure/widgets/distance_widget.dart';
 
 class SinglePageApp extends StatefulWidget {
-  final DatabaseReference database;
-  final FirebaseApp? firebase;
   @override
   const SinglePageApp({
     Key? key,
-    required this.database,
-    required this.firebase,
   }) : super(key: key);
   @override
-  _SinglePageAppState createState() => _SinglePageAppState(database, firebase);
+  _SinglePageAppState createState() => _SinglePageAppState();
 }
 
 class _SinglePageAppState extends State<SinglePageApp>
     with SingleTickerProviderStateMixin {
-  final DatabaseReference database;
-  final FirebaseApp? firebase;
-
   late TabController _tabController;
   int _selectedTab = 0;
-  late List _pageOptions;
+  List _pageOptions = [DistancePage(), SwitchPage()];
 
-  _SinglePageAppState(this.database, this.firebase) {
-    _pageOptions = [
-      DistancePage(database: database),
-      SwitchPage(database: database)
-    ];
-  }
+  _SinglePageAppState();
 
   //     FirebaseDatabase().reference();
   //database refrence

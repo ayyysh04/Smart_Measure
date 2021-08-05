@@ -1,13 +1,13 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
 import 'package:smart_measure/pages/add_devices.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ButtonPage extends StatefulWidget {
-  final DatabaseReference database;
-  const ButtonPage({
+  final DatabaseReference database = Database.database;
+  ButtonPage({
     Key? key,
-    required this.database,
   }) : super(key: key);
 
   @override

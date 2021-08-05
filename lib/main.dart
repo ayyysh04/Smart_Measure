@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smart_measure/pages/add_devices.dart';
+
 import 'package:smart_measure/pages/signin_page.dart';
-import 'package:smart_measure/pages/singlepage_app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
 import 'package:smart_measure/pages/singlepage_app.dart';
 import 'package:smart_measure/tools/intilize.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -13,7 +14,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  FirebaseApp? firebase;
   late String apikey, appid, projid, msgsenderid;
 
   final _formkey = GlobalKey<FormState>();
@@ -92,19 +92,18 @@ class _LoginPageState extends State<LoginPage> {
                     ElevatedButton(
                             onPressed: () async {
                               if (_formkey.currentState!.validate()) {
-                                firebase = await initilizeFirebase(
+                                await Firebaseapp.initilizeFirebase(
                                     apikey, appid, projid, msgsenderid);
-                                DatabaseReference database =
-                                    intitilizeDatabase(firebase);
+
+                                Database.intitilizeDatabase();
+                                print("pushing");
                                 await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SinglePageApp(
-                                        firebase: firebase,
-                                        database: database,
-                                      ),
+                                      builder: (context) => SinglePageApp(),
                                     )..completed.then((_) async {
-                                        await deleteApp(firebase);
+                                        print("deleted");
+                                        Firebaseapp.deleteApp();
                                       }));
                               }
                             },

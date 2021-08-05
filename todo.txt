@@ -1,0 +1,5 @@
+->use onchild added to sync new switches made on diffrent device
+->Load all the data from firebase in intilzation to make the already made widgets
+->instead of using list use maps
+->add a new firebase refrence when adding a new room
+->stream to rooms only 

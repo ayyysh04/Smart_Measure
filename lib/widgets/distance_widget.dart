@@ -1,22 +1,21 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class DistancePage extends StatefulWidget {
-  final DatabaseReference database;
   const DistancePage({
     Key? key,
-    required this.database,
   }) : super(key: key);
 
   @override
-  _DistancePageState createState() => _DistancePageState(database);
+  _DistancePageState createState() => _DistancePageState();
 }
 
 class _DistancePageState extends State<DistancePage> {
-  final DatabaseReference database;
+  final DatabaseReference database = Database.database;
   var distance;
-  _DistancePageState(this.database);
+  _DistancePageState();
   @override
   Widget build(BuildContext context) {
     return Column(
