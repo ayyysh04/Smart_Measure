@@ -90,12 +90,14 @@ class _ButtonPageState extends State<ButtonPage> {
                     //   switchValues[index] = true;
                     // else
                     //   switchValues[index] = false;
-                    print(SwitchMap.switches);
+                    // print(SwitchMap.switches);
                     return Dismissible(
-                      key: Key(
-                          SwitchMap.switches[roomname]!.keys.elementAt(index)),
+                      key: Key(SwitchMap.switches[roomname]!.values
+                          .elementAt(index)["name"]),
                       onDismissed: (left) {
                         SwitchMap.removeSwitch(roomname, index);
+                        setState(() {});
+                        SwitchMap.switchNoReallocate(roomname);
                       },
                       child: Container(
                         child: SwitchListTile(
