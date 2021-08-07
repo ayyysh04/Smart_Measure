@@ -96,13 +96,11 @@ class _LoginPageState extends State<LoginPage> {
                                     apikey, appid, projid, msgsenderid);
 
                                 Database.intitilizeDatabase();
-                                print("pushing");
                                 await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => SinglePageApp(),
                                     )..completed.then((_) async {
-                                        print("deleted");
                                         Firebaseapp.deleteApp();
                                       }));
                               }

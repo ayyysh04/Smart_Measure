@@ -1,26 +1,28 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
+import 'package:smart_measure/model/switch_map.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AddNewDevices extends StatefulWidget {
-  final DatabaseReference database;
+  final String roomname;
   AddNewDevices({
     Key? key,
-    required this.database,
+    required this.roomname,
   }) : super(key: key);
 
   @override
-  _AddNewDevicesState createState() => _AddNewDevicesState(database);
+  _AddNewDevicesState createState() => _AddNewDevicesState(roomname);
 }
 
 class _AddNewDevicesState extends State<AddNewDevices> {
-  final DatabaseReference database;
+  final String roomname;
+  final DatabaseReference database = Database.database;
   String? deviceType;
   String? pinNo;
   String? deviceName;
   final _formKey = GlobalKey<FormState>();
-
-  _AddNewDevicesState(this.database);
+  _AddNewDevicesState(this.roomname);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class _AddNewDevicesState extends State<AddNewDevices> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, false);
           },
         ),
         title: "New Devices".text.make(),
@@ -39,25 +41,27 @@ class _AddNewDevicesState extends State<AddNewDevices> {
           children: [
             newDeviceHeader().pSymmetric(h: 20, v: 20),
             20.heightBox,
-            Column(
-              children: [
-                deviceNameTextField(),
-                20.heightBox,
-                pinNoTextField(),
-                20.heightBox,
-                dropDownMenu(),
-              ],
-            ).pSymmetric(h: 30),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  deviceNameTextField(),
+                  20.heightBox,
+                  pinNoTextField(),
+                  20.heightBox,
+                  dropDownMenu(),
+                ],
+              ).pSymmetric(h: 30),
+            ),
             20.heightBox,
             ElevatedButton(
-              onPressed: () async {
-                await database.child("status3").set("OFF");
-                Navigator.pop(context, {
-                  "status": true,
-                  "deviceType": deviceType,
-                  "pinNo": pinNo,
-                  "deviceName": deviceName
-                });
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  int totalDevices = SwitchMap.switches[roomname]!.length;
+                  SwitchMap.addNewSwitch(deviceName, "off", pinNo, deviceType,
+                      roomname, totalDevices);
+                  Navigator.pop(context, true);
+                }
               },
               child: "Add".text.make(),
             )
@@ -84,7 +88,7 @@ class _AddNewDevicesState extends State<AddNewDevices> {
           disabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           border: InputBorder.none,
-          hintText: "Enter Device name",
+          hintText: (deviceType == null) ? "Enter Device name" : deviceType,
           labelText: "Device name:",
         ),
         validator: (value) {
@@ -96,7 +100,9 @@ class _AddNewDevicesState extends State<AddNewDevices> {
         onChanged: (value) {
           deviceName = value;
         },
-      ).pSymmetric(h: 30),
+      ).pSymmetric(
+        h: 30,
+      ),
     );
   }
 
@@ -155,9 +161,9 @@ class _AddNewDevicesState extends State<AddNewDevices> {
           "Enter Device type",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
         ),
-        onChanged: (String? value) {
+        onChanged: (value) {
           setState(() {
-            deviceType = value;
+            deviceType = value!;
           });
         },
       ).pSymmetric(h: 20),

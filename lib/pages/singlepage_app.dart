@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_measure/widgets/switch_widget.dart';
-import 'package:smart_measure/widgets/distance_widget.dart';
+import 'package:smart_measure/widgets/switch.dart';
+import 'package:smart_measure/widgets/distance.dart';
 
 class SinglePageApp extends StatefulWidget {
   @override

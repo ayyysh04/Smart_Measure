@@ -3,3 +3,31 @@
 ->instead of using list use maps
 ->add a new firebase refrence when adding a new room
 ->stream to rooms only 
+
+->create a json to handle data of switches
+->firebase.update(json) : to update our database ,json will be map of string,dynamic
+-firebase.onchange().value : will give json map of database 
+->data map:
+{
+    Devices: {
+              Room1: {
+                      Board1: {
+                               Switch2: 0, Switch1: 0
+                              }, 
+                      Board2: {
+                               Switch2: 1, Switch1: 0
+                              }
+                     }, 
+              GuestRoom: 0
+             }
+}
+
+
+-------------------IDEAS----------------
+List of rooms (map)
+Rooms=[
+ Room1,Room2;
+]
+
+
+
