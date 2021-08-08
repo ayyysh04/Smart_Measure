@@ -43,29 +43,17 @@ class SwitchMap {
             newSwitches["${newSwitches.keys.elementAt(i)}"]![
                     "${switches.values.elementAt(i).keys.elementAt(j)}"] =
                 switches.values.elementAt(i).values.elementAt(j);
-
-            //  "${switches.keys.elementAt(i)}": {
-            //     "${switches.values.elementAt(i).keys.elementAt(j)}":
-            //         switches.values.elementAt(i).values.elementAt(j),
-            //   },
-
           }
         } else {
           newSwitches["${newSwitches.keys.elementAt(i)}"]!["Switch ${j + 1}"] =
               switches.values.elementAt(i).values.elementAt(j);
-          // newSwitches = {
-          //   "Switch ${j + 1}": {
-          //     "${switches.values.elementAt(i).keys.elementAt(j)}":
-          //         switches.values.elementAt(i).values.elementAt(j),
-          //   },
-          // };
         }
       }
     }
     print(newSwitches);
     switches[roomName]!.clear();
     switches[roomName] = newSwitches[roomName]!;
-    // print(switches);
+
     newSwitches.clear();
   }
 
