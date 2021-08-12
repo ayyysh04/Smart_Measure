@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -48,6 +49,7 @@ removeBottomSheetContainer(BuildContext context) {
                 if (_formkey.currentState!.validate()) {
                   SwitchMap.removeRoom(roomname);
                   Navigator.pop(context);
+                  Database.database.child("/Devices").child(roomname).remove();
                 }
               },
               child: "Remove".text.make()),
@@ -89,7 +91,7 @@ Widget addBottomSheetContainer(BuildContext context) {
               onPressed: () {
                 if (_formkey.currentState!.validate()) {
                   SwitchMap.addNewRoom(roomname);
-
+                  Database.database.child("/Devices").child(roomname).set(0);
                   Navigator.pop(context);
                 }
               },

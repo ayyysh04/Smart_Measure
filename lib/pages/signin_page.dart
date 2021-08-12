@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_measure/model/firebase.dart';
+import 'package:smart_measure/model/firebase_login.dart';
+import 'package:smart_measure/model/home_data_model.dart';
 import 'package:smart_measure/pages/singlepage_app.dart';
 import 'package:smart_measure/tools/intilize.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -14,7 +16,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late String apikey, appid, projid, msgsenderid;
+  String? apikey = FirebaseLoginModel.apiKey,
+      appid = FirebaseLoginModel.appId,
+      projid = FirebaseLoginModel.projectId,
+      msgsenderid = FirebaseLoginModel.messagingSenderId;
 
   final _formkey = GlobalKey<FormState>();
 
@@ -92,6 +97,14 @@ class _LoginPageState extends State<LoginPage> {
                     ElevatedButton(
                             onPressed: () async {
                               if (_formkey.currentState!.validate()) {
+                                FirebaseLoginModel.apiKey = apikey;
+                                FirebaseLoginModel.appId = appid;
+
+                                FirebaseLoginModel.messagingSenderId =
+                                    msgsenderid;
+
+                                FirebaseLoginModel.projectId = projid;
+
                                 await Firebaseapp.initilizeFirebase(
                                     apikey, appid, projid, msgsenderid);
 
@@ -101,12 +114,18 @@ class _LoginPageState extends State<LoginPage> {
                                     MaterialPageRoute(
                                       builder: (context) => SinglePageApp(),
                                     )..completed.then((_) async {
-                                        Firebaseapp.deleteApp();
+                                        // Firebaseapp.deleteApp();
                                       }));
                               }
                             },
                             child: "Login".text.make())
                         .wh(100, 50),
+                    10.heightBox,
+                    ElevatedButton(
+                        onPressed: () {
+                          Firebaseapp.deleteApp();
+                        },
+                        child: "LOGOUT PERMANENT".text.make()),
                   ],
                 ).pSymmetric(h: 50)
               ],

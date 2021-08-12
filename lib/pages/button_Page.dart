@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/home_data_model.dart';
+import 'package:smart_measure/model/home_info_data.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:smart_measure/pages/add_devices.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -19,7 +21,6 @@ class ButtonPage extends StatefulWidget {
 
 class _ButtonPageState extends State<ButtonPage> {
   final String roomname;
-  // List<bool> switchValues = [];
   final DatabaseReference database = Database.database;
 
   _ButtonPageState(this.roomname);
@@ -31,11 +32,24 @@ class _ButtonPageState extends State<ButtonPage> {
     //   await database.child("").set("ON");
 
     if (SwitchMap.switches[roomname]!.values.elementAt(switchno)["status"] ==
-        "on")
+        "on") {
       SwitchMap.switches[roomname]!.values.elementAt(switchno)["status"] =
           "off";
-    else
+      database
+          .child("/Devices")
+          .child(roomname)
+          .child("Switch ${switchno + 1}")
+          .child("status")
+          .set("off");
+    } else {
       SwitchMap.switches[roomname]!.values.elementAt(switchno)["status"] = "on";
+      database
+          .child("/Devices")
+          .child(roomname)
+          .child("Switch ${switchno + 1}")
+          .child("status")
+          .set("on");
+    }
     setState(() {});
   }
 
@@ -49,7 +63,7 @@ class _ButtonPageState extends State<ButtonPage> {
 
   @override
   Widget build(BuildContext context) {
-    // database.once().then((value) => print(value.value)); //for checking data
+    //for checking data
 
     // addSwitch() async {
     //   dynamic result = await Navigator.push(
@@ -77,12 +91,13 @@ class _ButtonPageState extends State<ButtonPage> {
               return StreamBuilder(
                 stream: database.child("Devices/$roomname").onValue,
                 builder: (BuildContext context, AsyncSnapshot<Event> snap) {
-                  if (true
-                      // snap.hasData &&
-                      //   !snap.hasError &&
-                      //   snap.data!.snapshot.value != null
-                      ) {
+                  if (snap.hasData &&
+                      !snap.hasError &&
+                      snap.data!.snapshot.value != null &&
+                      SwitchMap.switches.length != 0) {
                     // Map data = snap.data!.snapshot.value;
+
+                    // print(data);
                     // print(SwitchMap.switches);
 
                     // var status = data["switch ${index + 1}"];
@@ -94,7 +109,7 @@ class _ButtonPageState extends State<ButtonPage> {
                     return Dismissible(
                       key: Key(SwitchMap.switches[roomname]!.values
                           .elementAt(index)["name"]),
-                      onDismissed: (left) {
+                      onDismissed: (left) async {
                         SwitchMap.removeSwitch(roomname, index);
                         setState(() {});
                         SwitchMap.switchNoReallocate(roomname);
@@ -129,7 +144,10 @@ class _ButtonPageState extends State<ButtonPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => AddNewDevices(roomname: roomname)));
+                    builder: (context) => AddNewDevices(roomname: roomname))
+                  ..completed.then((_) async {
+                    setState(() {});
+                  }));
           },
           child: Icon(Icons.add),
         ).pOnly(bottom: 18)

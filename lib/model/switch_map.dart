@@ -1,30 +1,22 @@
-class SwitchMap {
-  static Map<String, Map<String, Map>> switches = {
-    // "Room 1": {
-    //   "Switch 1": {
-    //     "name": "Laptop",
-    //     "status": "on",
-    //     "pin": "12",
-    //     "type": "button",
-    //   },
-    //   "Switch 2":
-    //   {
-    //     "name": "Mobile",
-    //     "status": "on",
-    //     "pin": "12",
-    //     "type": "button",
-    //   }
-    // },
-    // "Room 2": {
-    //   "Switch 1": {
-    //     "name": "Mobile",
-    //     "status": "on",
-    //     "pin": "12",
-    //     "type": "button",
+import 'package:smart_measure/model/firebase.dart';
 
-    //   }
-    // },
-  };
+class SwitchMap {
+  static Map<String, Map<String, Map>> switches = {};
+
+  static void frommap(Map data) {
+    for (int i = 0; i < data.length; i++) //rooms
+    {
+      String roomName = data.keys.elementAt(i).toString();
+      // print(roomName);
+      switches[roomName] = {}; //adding room
+      for (int j = 0; j < data[roomName].length; j++) //np of switches
+      {
+        String switchName = data[roomName].keys.elementAt(j).toString();
+        print(switchName);
+        switches[roomName]![switchName] = data[roomName][switchName];
+      }
+    }
+  }
 
   static void switchNoReallocate(String roomName) {
     Map<String, Map<String, Map>> newSwitches = {};
@@ -50,10 +42,10 @@ class SwitchMap {
         }
       }
     }
-    print(newSwitches);
     switches[roomName]!.clear();
     switches[roomName] = newSwitches[roomName]!;
-
+    print(switches[roomName]);
+    Database.database.child("/Devices").update(switches);
     newSwitches.clear();
   }
 
@@ -61,17 +53,46 @@ class SwitchMap {
     switches["$roomName"] = {};
   }
 
-  static void addNewSwitch(String? name, String? status, String? pin,
-      String? type, String roomName, int switchNo) {
+  static Future<void> addNewSwitch(String? name, String? status, String? pin,
+      String? type, String roomName, int switchNo) async {
     switches["$roomName"]!["Switch ${switchNo + 1}"] = {
       "name": name,
       "status": status,
       "pin": pin,
       "type": type,
     };
+    Database.database
+        .child("/Devices")
+        .child(roomName)
+        .child("Switch ${switchNo + 1}")
+        .child("name")
+        .set(name);
+    Database.database
+        .child("/Devices")
+        .child(roomName)
+        .child("Switch ${switchNo + 1}")
+        .child("status")
+        .set(status);
+    Database.database
+        .child("/Devices")
+        .child(roomName)
+        .child("Switch ${switchNo + 1}")
+        .child("pin")
+        .set(pin);
+    Database.database
+        .child("/Devices")
+        .child(roomName)
+        .child("Switch ${switchNo + 1}")
+        .child("type")
+        .set(type);
   }
 
-  static void removeSwitch(String roomName, int index) {
+  static void removeSwitch(String roomName, int index) async {
+    Database.database
+        .child("/Devices")
+        .child(roomName)
+        .child("Switch ${index + 1}")
+        .remove();
     switches["$roomName"]!.remove(switches["$roomName"]!.keys.elementAt(index));
   }
 

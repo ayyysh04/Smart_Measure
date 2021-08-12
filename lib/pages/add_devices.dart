@@ -55,11 +55,16 @@ class _AddNewDevicesState extends State<AddNewDevices> {
             ),
             20.heightBox,
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   int totalDevices = SwitchMap.switches[roomname]!.length;
                   SwitchMap.addNewSwitch(deviceName, "off", pinNo, deviceType,
                       roomname, totalDevices);
+                  // await Database.database
+                  //     .child("/Devices")
+                  //     .child(roomname)
+                  //     .child("Switch ${totalDevices + 1}")
+                  //     .set(0);
                   Navigator.pop(context, true);
                 }
               },

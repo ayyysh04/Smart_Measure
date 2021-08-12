@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_measure/pages/signin_page.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

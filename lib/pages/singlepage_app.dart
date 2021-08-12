@@ -20,8 +20,8 @@ class _SinglePageAppState extends State<SinglePageApp>
 
   _SinglePageAppState();
 
-  //     FirebaseDatabase().reference();
-  //database refrence
+  // FirebaseDatabase().reference();
+  // database refrence
 
   // void getData() async {
   //   //to get the value if the database

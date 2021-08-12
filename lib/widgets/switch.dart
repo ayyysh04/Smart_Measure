@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_measure/model/firebase.dart';
+import 'package:smart_measure/model/firebase_login.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:smart_measure/pages/add_devices.dart';
 import 'package:smart_measure/pages/button_Page.dart';
@@ -18,17 +19,26 @@ class SwitchPage extends StatefulWidget {
 
 class _SwitchPageState extends State<SwitchPage> {
   final DatabaseReference database = Database.database;
-  bool led = false;
-  void updateswitch() async {
-    if (led == true)
-      await database.update({'STATUS': "OFF"});
-    else
-      await database.update({'STATUS': "ON"});
-  }
+
+  // bool led = false;
+  // void updateswitch() async {
+  //   if (led == true)
+  //     await database.update({'STATUS': "OFF"});
+  //   else
+  //     await database.update({'STATUS': "ON"});
+  // }
 
   _SwitchPageState();
   @override
   Widget build(BuildContext context) {
+    print(SwitchMap.switches);
+    // database.child("/Devices").once().then((value) {
+    //   // Map<String, Map<String, Map>> data = value.value;
+    //   // SwitchMap.switches = data;
+    //   print(value.value);
+    //   // SwitchMap.frommap(value.value);
+    // });
+
     return SafeArea(
         child: Container(
       child: SingleChildScrollView(
@@ -66,7 +76,7 @@ class _SwitchPageState extends State<SwitchPage> {
                 FloatingActionButton(
                   heroTag: null,
                   backgroundColor: Colors.black,
-                  onPressed: () {
+                  onPressed: () async {
                     // String roomname;
                     // SwitchMap.addNewRoom(roomname);
                     // addRoom();
@@ -79,7 +89,7 @@ class _SwitchPageState extends State<SwitchPage> {
                 FloatingActionButton(
                   heroTag: null,
                   backgroundColor: Colors.black,
-                  onPressed: () {
+                  onPressed: () async {
                     showBottomsSheet(context, "Remove");
                     setState(() {});
                   },
@@ -94,29 +104,29 @@ class _SwitchPageState extends State<SwitchPage> {
   }
 }
 
-showAlertDialog(BuildContext context) {
-  // Create button
-  Widget okButton = ElevatedButton(
-    child: Text("OK"),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
+// showAlertDialog(BuildContext context) {
+//   // Create button
+//   Widget okButton = ElevatedButton(
+//     child: Text("OK"),
+//     onPressed: () {
+//       Navigator.of(context).pop();
+//     },
+//   );
 
-  // Create AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text("Simple Alert"),
-    content: Text("This is an alert message."),
-    actions: [
-      okButton,
-    ],
-  );
+//   // Create AlertDialog
+//   AlertDialog alert = AlertDialog(
+//     title: Text("Simple Alert"),
+//     content: Text("This is an alert message."),
+//     actions: [
+//       okButton,
+//     ],
+//   );
 
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
+//   // show the dialog
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return alert;
+//     },
+//   );
+// }
