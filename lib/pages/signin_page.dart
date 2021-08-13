@@ -1,30 +1,19 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/core/store.dart';
 import 'package:smart_measure/model/firebase.dart';
 import 'package:smart_measure/model/firebase_login.dart';
-import 'package:smart_measure/model/home_data_model.dart';
-import 'package:smart_measure/pages/singlepage_app.dart';
-import 'package:smart_measure/tools/intilize.dart';
+import 'package:smart_measure/pages/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  String? apikey = FirebaseLoginModel.apiKey,
-      appid = FirebaseLoginModel.appId,
-      projid = FirebaseLoginModel.projectId,
-      msgsenderid = FirebaseLoginModel.messagingSenderId;
-
   final _formkey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
+    FirebaseLoginModel? firebaseLoginData =
+        (VxState.store as Mystore).firebaseLogindata;
+    String? apikey, appid, projid, msgsenderid;
     return Material(
       child: SafeArea(
         child: SingleChildScrollView(
@@ -94,38 +83,16 @@ class _LoginPageState extends State<LoginPage> {
                           msgsenderid = value;
                         }),
                     20.heightBox,
-                    ElevatedButton(
-                            onPressed: () async {
-                              if (_formkey.currentState!.validate()) {
-                                FirebaseLoginModel.apiKey = apikey;
-                                FirebaseLoginModel.appId = appid;
-
-                                FirebaseLoginModel.messagingSenderId =
-                                    msgsenderid;
-
-                                FirebaseLoginModel.projectId = projid;
-
-                                await Firebaseapp.initilizeFirebase(
-                                    apikey, appid, projid, msgsenderid);
-
-                                Database.intitilizeDatabase();
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SinglePageApp(),
-                                    )..completed.then((_) async {
-                                        // Firebaseapp.deleteApp();
-                                      }));
-                              }
-                            },
-                            child: "Login".text.make())
+                    LoginButtonWidget(
+                            formkey: _formkey,
+                            firebaseLoginData: firebaseLoginData,
+                            apikey: apikey,
+                            appid: appid,
+                            msgsenderid: msgsenderid,
+                            projid: projid)
                         .wh(100, 50),
                     10.heightBox,
-                    ElevatedButton(
-                        onPressed: () {
-                          Firebaseapp.deleteApp();
-                        },
-                        child: "LOGOUT PERMANENT".text.make()),
+                    DeleteButtonWidget(),
                   ],
                 ).pSymmetric(h: 50)
               ],
@@ -134,5 +101,69 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+}
+
+class DeleteButtonWidget extends StatelessWidget {
+  const DeleteButtonWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Firebaseapp? firebaseAppData = (VxState.store as Mystore).fireAppData;
+    return ElevatedButton(
+        onPressed: () {
+          firebaseAppData!.deleteApp();
+        },
+        child: "LOGOUT PERMANENT".text.make());
+  }
+}
+
+class LoginButtonWidget extends StatelessWidget {
+  const LoginButtonWidget({
+    Key? key,
+    required GlobalKey<FormState> formkey,
+    required this.firebaseLoginData,
+    required this.apikey,
+    required this.appid,
+    required this.msgsenderid,
+    required this.projid,
+  })  : _formkey = formkey,
+        super(key: key);
+
+  final GlobalKey<FormState> _formkey;
+  final FirebaseLoginModel? firebaseLoginData;
+  final String? apikey;
+  final String? appid;
+  final String? msgsenderid;
+  final String? projid;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () async {
+          if (_formkey.currentState!.validate()) {
+            firebaseLoginData!.apiKey = apikey;
+            firebaseLoginData!.appId = appid;
+
+            firebaseLoginData!.messagingSenderId = msgsenderid;
+
+            firebaseLoginData!.projectId = projid;
+
+            // await Firebaseapp.initilizeFirebase(
+            //     apikey, appid, projid, msgsenderid);
+            Database? databaseData = (VxState.store as Mystore).databaseData;
+            databaseData!.intitilizeDatabase();
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePageApp(),
+                )..completed.then((_) async {
+                    // Firebaseapp.deleteApp();
+                  }));
+          }
+        },
+        child: "Login".text.make());
   }
 }

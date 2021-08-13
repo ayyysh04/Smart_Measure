@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_measure/core/store.dart';
+import 'package:smart_measure/main.dart';
 import 'package:smart_measure/model/firebase.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -13,23 +15,18 @@ class DistancePage extends StatefulWidget {
 }
 
 class _DistancePageState extends State<DistancePage> {
-  final DatabaseReference database = Database.database;
+  final DatabaseReference? database =
+      (VxState.store as Mystore).databaseData!.database;
   var distance;
   _DistancePageState();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Stream.fromIterable(elements)
-        // Stream.multi(() { })
-        // Stream.fromFutures(futures)
-        // Stream.fromFuture(future)
         StreamBuilder(
-          stream:
-              // database.onValue
-              database
-                  .child("")
-                  .onValue //onValue:When value changes then this gets trigger
+          stream: database!
+              .child("")
+              .onValue //onValue:When value changes then this gets trigger
 
           ,
           builder: (context, AsyncSnapshot<Event> snap) {

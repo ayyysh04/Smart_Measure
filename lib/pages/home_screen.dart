@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:smart_measure/widgets/switch.dart';
 import 'package:smart_measure/widgets/distance.dart';
 
-class SinglePageApp extends StatefulWidget {
+class HomePageApp extends StatefulWidget {
   @override
-  const SinglePageApp({
+  const HomePageApp({
     Key? key,
   }) : super(key: key);
   @override
-  _SinglePageAppState createState() => _SinglePageAppState();
+  _HomePageAppState createState() => _HomePageAppState();
 }
 
-class _SinglePageAppState extends State<SinglePageApp>
+class _HomePageAppState extends State<HomePageApp>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedTab = 0;
   List _pageOptions = [DistancePage(), SwitchPage()];
 
-  _SinglePageAppState();
+  _HomePageAppState();
 
   // FirebaseDatabase().reference();
   // database refrence
@@ -48,10 +48,10 @@ class _SinglePageAppState extends State<SinglePageApp>
 
   @override
   Widget build(BuildContext context) {
-    return mainPage();
+    return homeScreenPage();
   }
 
-  Widget mainPage() {
+  Widget homeScreenPage() {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

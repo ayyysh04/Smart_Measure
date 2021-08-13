@@ -1,29 +1,19 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_measure/model/home_data_model.dart';
-import 'package:smart_measure/model/home_info_data.dart';
+import 'package:smart_measure/core/store.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:smart_measure/pages/add_devices.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'package:smart_measure/model/firebase.dart';
+DatabaseReference? database = (VxState.store as Mystore).databaseData!.database;
 
-class ButtonPage extends StatefulWidget {
+class ButtonPage extends StatelessWidget {
   final String roomname;
   ButtonPage({
     Key? key,
     required this.roomname,
   }) : super(key: key);
 
-  @override
-  _ButtonPageState createState() => _ButtonPageState(roomname);
-}
-
-class _ButtonPageState extends State<ButtonPage> {
-  final String roomname;
-  final DatabaseReference database = Database.database;
-
-  _ButtonPageState(this.roomname);
   onchangedvalue({required int switchno}) async {
     // switchValues[switchno] = switchValues[switchno].toggle();
     // if (switchValues[switchno] == true)
@@ -35,7 +25,7 @@ class _ButtonPageState extends State<ButtonPage> {
         "on") {
       SwitchMap.switches[roomname]!.values.elementAt(switchno)["status"] =
           "off";
-      database
+      database!
           .child("/Devices")
           .child(roomname)
           .child("Switch ${switchno + 1}")
@@ -43,14 +33,14 @@ class _ButtonPageState extends State<ButtonPage> {
           .set("off");
     } else {
       SwitchMap.switches[roomname]!.values.elementAt(switchno)["status"] = "on";
-      database
+      database!
           .child("/Devices")
           .child(roomname)
           .child("Switch ${switchno + 1}")
           .child("status")
           .set("on");
     }
-    setState(() {});
+    // setState(() {});
   }
 
   bool switchBoolValue(int switchno) {
@@ -63,6 +53,7 @@ class _ButtonPageState extends State<ButtonPage> {
 
   @override
   Widget build(BuildContext context) {
+    VxState.watch(context, on: [AddNewSwitch, RemoveSwitch]);
     //for checking data
 
     // addSwitch() async {
@@ -76,7 +67,6 @@ class _ButtonPageState extends State<ButtonPage> {
     //     }
     //   });
     // }
-
     //--------------------
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +79,7 @@ class _ButtonPageState extends State<ButtonPage> {
             },
             itemBuilder: (BuildContext context, int index) {
               return StreamBuilder(
-                stream: database.child("Devices/$roomname").onValue,
+                stream: database!.child("Devices/$roomname").onValue,
                 builder: (BuildContext context, AsyncSnapshot<Event> snap) {
                   if (snap.hasData &&
                       !snap.hasError &&
@@ -110,9 +100,11 @@ class _ButtonPageState extends State<ButtonPage> {
                       key: Key(SwitchMap.switches[roomname]!.values
                           .elementAt(index)["name"]),
                       onDismissed: (left) async {
-                        SwitchMap.removeSwitch(roomname, index);
-                        setState(() {});
-                        SwitchMap.switchNoReallocate(roomname);
+                        RemoveSwitch(roomname, index);
+                        // switchMapData!.removeSwitch(roomname, index);
+                        // setState(() {});
+                        SwitchNoReallocate(roomname);
+                        // switchMapData.switchNoReallocate(roomname);
                       },
                       child: Container(
                         child: SwitchListTile(
@@ -122,7 +114,7 @@ class _ButtonPageState extends State<ButtonPage> {
                                   .make(),
                           // "${data.keys.elementAt(index)}".text.make(),
                           value: switchBoolValue(index),
-                          onChanged: (val) {
+                          onChanged: (_) {
                             onchangedvalue(switchno: index);
                           },
                         ),
@@ -146,7 +138,7 @@ class _ButtonPageState extends State<ButtonPage> {
                 MaterialPageRoute(
                     builder: (context) => AddNewDevices(roomname: roomname))
                   ..completed.then((_) async {
-                    setState(() {});
+                    // setState(() {});
                   }));
           },
           child: Icon(Icons.add),

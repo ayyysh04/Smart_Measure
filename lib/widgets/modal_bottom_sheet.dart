@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_measure/core/store.dart';
 import 'package:smart_measure/model/firebase.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -16,6 +17,8 @@ showBottomsSheet(BuildContext context, String use) {
       });
 }
 
+SwitchMap? switchMapData = (VxState.store as Mystore).switchData;
+Database? database = (VxState.store as Mystore).databaseData;
 removeBottomSheetContainer(BuildContext context) {
   final _formkey = GlobalKey<FormState>();
   late String roomname;
@@ -47,9 +50,13 @@ removeBottomSheetContainer(BuildContext context) {
           ElevatedButton(
               onPressed: () {
                 if (_formkey.currentState!.validate()) {
-                  SwitchMap.removeRoom(roomname);
+                  RemoveRoom(roomname);
+                  // switchMapData!.removeRoom(roomname);
                   Navigator.pop(context);
-                  Database.database.child("/Devices").child(roomname).remove();
+                  database!.database!
+                      .child("/Devices")
+                      .child(roomname)
+                      .remove();
                 }
               },
               child: "Remove".text.make()),
@@ -90,8 +97,9 @@ Widget addBottomSheetContainer(BuildContext context) {
           ElevatedButton(
               onPressed: () {
                 if (_formkey.currentState!.validate()) {
-                  SwitchMap.addNewRoom(roomname);
-                  Database.database.child("/Devices").child(roomname).set(0);
+                  AddNewRoom(roomname);
+                  // switchMapData!.addNewRoom(roomname);
+                  database!.database!.child("/Devices").child(roomname).set(0);
                   Navigator.pop(context);
                 }
               },

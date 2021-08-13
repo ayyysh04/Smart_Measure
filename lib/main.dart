@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:smart_measure/core/store.dart';
 
 import 'package:smart_measure/pages/signin_page.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(
+    VxState(
+      store: Mystore(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +29,6 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       routes: {
         "/": (context) => LoginPage(),
-        // "/addDevice": (context) => AddNewDevices(),
       },
     );
   }

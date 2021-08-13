@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_measure/model/firebase.dart';
+import 'package:flutter/services.dart';
+import 'package:smart_measure/core/store.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -16,10 +17,12 @@ class AddNewDevices extends StatefulWidget {
 }
 
 class _AddNewDevicesState extends State<AddNewDevices> {
-  final String roomname;
-  final DatabaseReference database = Database.database;
+  SwitchMap? switchMapData = (VxState.store as Mystore).switchData;
+  String roomname;
+  final DatabaseReference? database =
+      (VxState.store as Mystore).databaseData!.database;
   String? deviceType;
-  String? pinNo;
+  int? pinNo;
   String? deviceName;
   final _formKey = GlobalKey<FormState>();
   _AddNewDevicesState(this.roomname);
@@ -58,8 +61,10 @@ class _AddNewDevicesState extends State<AddNewDevices> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   int totalDevices = SwitchMap.switches[roomname]!.length;
-                  SwitchMap.addNewSwitch(deviceName, "off", pinNo, deviceType,
-                      roomname, totalDevices);
+                  AddNewSwitch(deviceName, "off", pinNo, deviceType, roomname,
+                      totalDevices);
+                  // switchMapData!.addNewSwitch(deviceName, "off", pinNo,
+                  //     deviceType, roomname, totalDevices);
                   // await Database.database
                   //     .child("/Devices")
                   //     .child(roomname)
@@ -118,6 +123,8 @@ class _AddNewDevicesState extends State<AddNewDevices> {
         borderRadius: new BorderRadius.circular(10.0),
       ),
       child: TextFormField(
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           disabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -133,7 +140,7 @@ class _AddNewDevicesState extends State<AddNewDevices> {
           return null;
         },
         onChanged: (value) {
-          pinNo = value;
+          pinNo = int.parse(value);
         },
       ).pSymmetric(h: 30),
     );

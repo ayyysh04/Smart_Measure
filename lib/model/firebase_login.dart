@@ -1,10 +1,10 @@
 //Stores the data of Firebase Login
 //Will fix issue of restart ,maybe
 class FirebaseLoginModel {
-  static String? apiKey;
-  static String? appId;
-  static String? projectId;
-  static String? messagingSenderId;
+  String? apiKey;
+  String? appId;
+  String? projectId;
+  String? messagingSenderId;
 }
 
 // class FirebaseLoginData {
