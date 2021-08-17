@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_measure/core/store.dart';
+import 'package:smart_measure/model/home_data_model.dart';
+import 'package:smart_measure/model/new.dart';
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:smart_measure/pages/add_devices.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -53,6 +55,21 @@ class ButtonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    database!.once().then((value) {
+      Map data = value.value;
+      print(data);
+      Devices dev = Devices.fromMap(data["Devices"]);
+      dev.rooms.forEach((element) {
+        print("Switch:");
+        element.switches.forEach((element) {
+          print(element.name);
+          print(element.pin);
+          print(element.status);
+          print(element.type);
+        });
+      });
+    });
+
     VxState.watch(context, on: [AddNewSwitch, RemoveSwitch]);
     //for checking data
 

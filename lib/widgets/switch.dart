@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_measure/model/firebase.dart';
 
 import 'package:smart_measure/model/switch_map.dart';
 import 'package:smart_measure/pages/button_Page.dart';
@@ -103,7 +104,7 @@ class RoomListBuilderWidget extends StatelessWidget {
               ),
             ],
           ),
-        ).pOnly(left: 20, right: 20);
+        ).pSymmetric(h: 50, v: 20);
       },
     );
   }

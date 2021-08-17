@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:smart_measure/model/home_info_data.dart';
-
 // class HoomeDataModel {
 //   UserInfoModel userInfoModel;
 //   SwitchInfoModel switchInfoModel;

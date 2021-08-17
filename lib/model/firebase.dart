@@ -16,17 +16,43 @@ class Database {
     base.setPersistenceEnabled(true);
 
     base.setPersistenceCacheSizeBytes(10000000);
+    Map data = {};
+    await database!.child("/Devices").orderByKey().once().then((value) async {
+      Map roomdata = value.value;
+      for (int i = 0; i < roomdata.length; i++) {
+        String roomname = roomdata.keys.elementAt(i);
 
-    await database!.child("/Devices").once().then((value) {
-      print(value.value);
-      if (value.value == null)
-        return;
-      else {
-        SwitchMap? switchMapData = (VxState.store as Mystore).switchData;
-        switchMapData!.frommap(value.value);
+        await database!
+            .child("/Devices/$roomname")
+            .orderByKey()
+            .once()
+            .then((value) {
+          data[roomname] = value.value;
+        });
       }
-      database!.keepSynced(true);
     });
+    SwitchMap? switchMapData = (VxState.store as Mystore).switchData;
+    switchMapData!.frommap(data);
+    // print(data);
+    //Temporary fix
+    // await database!.child("/Devices/Room 2").orderByKey().once().then((value) {
+    //   Map roomdata = value.value;
+    //   Map data = {"Room 2": roomdata};
+    //   print(data);
+    //   SwitchMap? switchMapData = (VxState.store as Mystore).switchData;
+    //   switchMapData!.frommap(data);
+    // });
+
+    // await database!.child("/Devices").orderByKey().once().then((value) {
+    //   // print(value.value);
+    //   if (value.value == null)
+    //     return;
+    //   else {
+    //     SwitchMap? switchMapData = (VxState.store as Mystore).switchData;
+    //     switchMapData!.frommap(value.value);
+    //   }
+    // });
+    database!.keepSynced(true);
   }
 }
 

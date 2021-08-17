@@ -60,7 +60,8 @@ class _HomePageAppState extends State<HomePageApp>
             Navigator.pop(context);
           },
         ),
-        title: Text("Smart Measure"),
+        title: Text("SMART HOME"),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           onTap: (int index) {
